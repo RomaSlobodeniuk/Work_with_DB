@@ -29,4 +29,5 @@ $dblist = new Databases_classes\DB_List();
 //                                                                            "modified_date" => "2016-11-08",
 //                                                                            "status" => 0,
 //                                                                            "type" => 4 ]);
-var_export($dblist->getUserById("usersssss", 1));
+//var_export($dblist->getUserById("usersssss", 1));
+$dblist->showArray($dblist->getUserByStatus("usersssss", 0));
