@@ -83,7 +83,7 @@ class Parse
                 if ($current == $j + 1) {
                     $pag .= '<li class="active"><span>' . ($j + 1) . '</span></li>';
                 } else {
-                    $pag .= '<li><a href="?Cpag=' . ($j + 1) . '">' . ($j + 1) . '</a></li>';
+                    $pag .= '<li><a href="page-' . ($j + 1) . '.html">' . ($j + 1) . '</a></li>';
                 }
             }
             $pag .= '</ul>';
