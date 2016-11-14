@@ -3,3 +3,40 @@
     z-index: 99999999;
     margin: 0;
 }
+
+.alert-info {
+    background: rgba(255, 255, 255, 0.3);
+    color: #f8ffba;
+    text-shadow: 0 0 6px rgb(67, 190, 255);
+}
+
+.alert-warning {
+    background: rgba(255, 167, 29, 0.3);
+    color: #f8ffba;
+    text-shadow: 0 0 6px rgb(255, 167, 29);
+}
+
+.alert-success {
+    background: rgba(141, 255, 92, 0.6);
+    color: #f7f6ff;
+    text-shadow: 0 0 6px rgb(108, 63, 255);
+    font-size: 20px;
+}
+
+.pagination li a{
+    background: rgba(141, 255, 92, 0.1);
+    color: #fcfaff;
+    text-shadow: 0 0 6px rgb(255, 237, 6);
+}
+
+.pagination>.active>span{
+    background: rgba(8, 6, 255, 0.1);
+    color: #1ad6ff;
+    text-shadow: 0 0 6px rgb(247, 246, 255);
+}
+
+.pagination>.active>span:hover{
+    background: rgba(8, 6, 255, 0.1);
+    color: #1ad6ff;
+    text-shadow: 0 0 6px rgb(247, 246, 255);
+}

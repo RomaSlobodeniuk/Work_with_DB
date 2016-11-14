@@ -19,7 +19,7 @@
 <div class="jumbotron">
     <div class="container">
         <div class="row alert alert-info">
-            <?php echo 'There is below you can see the result of the parsing messages from the page: ' . $this->page_array[$_GET['Cpag']-1]; ?>
+            <h2><?php echo 'There is below you can see the result of the parsing messages from the page: ' . $this->page_array[$_GET['Cpag']-1]; ?></h2>
         </div>
         <div class="row text-center">
             <?php echo $pagination; ?>
