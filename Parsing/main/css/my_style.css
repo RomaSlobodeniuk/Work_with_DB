@@ -24,13 +24,19 @@
 }
 
 .pagination li a{
-    background: rgba(141, 255, 92, 0.1);
+    background: rgba(141, 255, 92, 0.3);
     color: #fcfaff;
     text-shadow: 0 0 6px rgb(255, 237, 6);
 }
 
+.pagination li a:hover{
+    background: rgba(8, 6, 255, 0.3);
+    color: #1ad6ff;
+    text-shadow: 0 0 6px rgb(247, 246, 255);
+}
+
 .pagination>.active>span{
-    background: rgba(8, 6, 255, 0.1);
+    background: rgba(8, 6, 255, 0.3);
     color: #1ad6ff;
     text-shadow: 0 0 6px rgb(247, 246, 255);
 }
