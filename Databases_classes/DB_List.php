@@ -20,18 +20,18 @@ class DB_List extends Initialization
         return $row;
     }
 
-    public function getAllUsersFromDB($table_name){
+    public function getAllItemsFromDB($table_name){
         $this->setConnection();
         $query = "SELECT * FROM `{$table_name}`";
         $result = $this->database->query($query);
 
-        $user_list = array();
+        $list = array();
         while ($row = $result->fetch_assoc()){
-            array_push($user_list, $row);
+            array_push($list, $row);
         }
 
         $this->closeConnection();
-        return $user_list;
+        return $list;
     }
 
     public function getUserByStatus($table_name, $status)

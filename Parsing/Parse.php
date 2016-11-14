@@ -7,6 +7,10 @@
  */
 
 namespace Parsing;
+use Databases_classes\Initialization;
+use Databases_classes\Create;
+use Databases_classes\Edit;
+use Databases_classes\DB_List;
 
 class Parse
 {
@@ -44,18 +48,30 @@ class Parse
     }
 
     public function parseData($path_for_parsing){
+        $temp_array_with_messages = array();
         for($i = $this->number_of_current_page; $i > $this->number_of_current_page - 5; $i--){
             $this->current_page = self::INITIAL_PAGE . 'index/' . $i;
             array_push($this->page_array, $this->current_page);
 
 //            $search_content = $this->getContentForParsing($this->current_page); // if we want to parse content from "bash.im";
-            $search_content = $this->getContentForParsing($path_for_parsing); // if we wanna parse just for testing;
+            $search_content = $this->getContentForParsing($path_for_parsing); // if we wanna parse just for testing from file: Parsing/data/input_data.txt;
             $pattern = '/<div class="text">(.*)<\/div>/i';
             $match = preg_match_all($pattern, $search_content, $matches);
             foreach ($matches[0] as $list) {
-                array_push($this->data, $list);
+                array_push($temp_array_with_messages, $list);
             }
         }
+        $array_for_recording_to_DB = array();
+        $array_for_recording_to_DB['type'] = Initialization::MESSAGES;
+        $array_for_recording_to_DB['table_name'] = 'message_base';
+        array_push($array_for_recording_to_DB, $temp_array_with_messages);
+
+        $create = new Create();
+        $result = (integer)$create->createTable('message_base', Create::MESSAGES);
+        $edit = new Edit();
+        $result = (integer)$edit->insertInTable($array_for_recording_to_DB);
+        $db_list = new DB_List();
+        $this->data = $db_list->getAllItemsFromDB($array_for_recording_to_DB['table_name']);
     }
 
     public function showContent()

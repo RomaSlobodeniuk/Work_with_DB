@@ -28,8 +28,8 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="thumbnail">
-                        <h3><?php echo "Message number: \"". ($i + 1) . "\""?></h3>
-                        <p><?php echo $this->data[$i]; ?></p>
+                        <h3><?php echo "Message number: \"". $this->data[$i]['id'] . "\""?></h3>
+                        <?php echo $this->data[$i]['messages']; ?>
                     </div>
                 </div>
             </div>

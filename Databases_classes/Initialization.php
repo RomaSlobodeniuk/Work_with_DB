@@ -16,6 +16,8 @@ abstract class Initialization
     public $user;
     public $password;
     const MAIN_BASE = 'main_base';
+    const MESSAGES = 'create_table_for_messages';
+    const USERS = 'create_table_for_users';
 
     public function setConnection($host = 'localhost', $user = 'root', $password = '', $database = self::MAIN_BASE)
     {

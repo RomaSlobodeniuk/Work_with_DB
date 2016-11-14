@@ -16,6 +16,7 @@ spl_autoload_register(function ($class) {
 $parse = new Parsing\Parse();
 
 //echo "The result of table creation is: " . (integer)$create->createTable('usersssss');
+//echo "The result of table creation for MESSAGES is: " . (integer)$create->createTable('message_base', \Databases_classes\Create::MESSAGES);
 //echo "The result of table deletion is: " . (integer)$create->deleteTable('usersssss');
 //echo "The result of table inserting is: " . (integer)$edit->insertInTable(["table_name" => "usersssss",
 //                                                                            "id" => NULL,
