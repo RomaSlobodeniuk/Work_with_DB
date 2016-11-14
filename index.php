@@ -1,5 +1,6 @@
 <?php
 
+
 spl_autoload_register(function ($class) {
     $file_name = str_replace('\\', '/', $class) . '.php';
     if (file_exists($file_name)) {
@@ -10,9 +11,11 @@ spl_autoload_register(function ($class) {
 });
 
 
-$create = new Databases_classes\Create();
-$edit = new Databases_classes\Edit();
-$dblist = new Databases_classes\DB_List();
+//$create = new Databases_classes\Create();
+//$edit = new Databases_classes\Edit();
+//$dblist = new Databases_classes\DB_List();
+$parse = new Parsing\Parse();
+
 //echo "The result of table creation is: " . (integer)$create->createTable('usersssss');
 //echo "The result of table deletion is: " . (integer)$create->deleteTable('usersssss');
 //echo "The result of table inserting is: " . (integer)$edit->insertInTable(["table_name" => "usersssss",
@@ -30,4 +33,4 @@ $dblist = new Databases_classes\DB_List();
 //                                                                            "status" => 0,
 //                                                                            "type" => 4 ]);
 //var_export($dblist->getUserById("usersssss", 1));
-$dblist->showArray($dblist->getUserByStatus("usersssss", 0));
+//$dblist->showArray($dblist->getUserByStatus("usersssss", 0));
