@@ -20,6 +20,16 @@ class DB_List extends Initialization
         return $row;
     }
 
+    public function getUserByStatus($table_name, $status)
+    {
+        $this->setConnection();
+        $query = "SELECT * FROM `{$table_name}` WHERE `status` = '{$status}'";
+        $result = $this->database->query($query);
+        $row = $result->fetch_assoc();
+        $this->closeConnection();
+        return $row;
+    }
+
     public function getAllItemsFromDB($table_name){
         $this->setConnection();
         $query = "SELECT * FROM `{$table_name}`";
@@ -32,15 +42,5 @@ class DB_List extends Initialization
 
         $this->closeConnection();
         return $list;
-    }
-
-    public function getUserByStatus($table_name, $status)
-    {
-        $this->setConnection();
-        $query = "SELECT * FROM `{$table_name}` WHERE `status` = '{$status}'";
-        $result = $this->database->query($query);
-        $row = $result->fetch_assoc();
-        $this->closeConnection();
-        return $row;
     }
 }

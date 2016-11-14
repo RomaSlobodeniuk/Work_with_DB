@@ -25,10 +25,10 @@
             <?php echo $pagination; ?>
         </div>
         <?php for ($i = $start; $i < $end; $i++): ?>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="thumbnail">
-                        <h3><?php echo "Message number: \"". $this->data[$i]['id'] . "\""?></h3>
+            <div class="row alert alert-info">
+                <div class="col-sm-12 alert alert-warning">
+                    <h3><?php echo "Message number: \"". $this->data[$i]['id'] . "\""?></h3>
+                    <div class="thumbnail alert alert-success">
                         <?php echo $this->data[$i]['messages']; ?>
                     </div>
                 </div>
