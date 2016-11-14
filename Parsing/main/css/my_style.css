@@ -1,0 +1,5 @@
+.jumbotron {
+    background: url("../img/bckgr.jpg") no-repeat fixed 0;
+    z-index: 99999999;
+    margin: 0;
+}

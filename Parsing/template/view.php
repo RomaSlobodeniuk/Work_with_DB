@@ -18,11 +18,18 @@
 <body>
 <div class="jumbotron">
     <div class="container">
+        <div class="row alert alert-info">
+            <?php echo 'There is below you can see the result of the parsing messages from the page: ' . $this->page_array[$_GET['Cpag']-1]; ?>
+        </div>
+        <div class="row text-center">
+            <?php echo $pagination; ?>
+        </div>
         <?php for ($i = $start; $i < $end; $i++): ?>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="thumbnail">
-                        <p><?php echo $this->data[$i] ?></p>
+                        <h3><?php echo "Message number: \"". ($i + 1) . "\""?></h3>
+                        <p><?php echo $this->data[$i]; ?></p>
                     </div>
                 </div>
             </div>
