@@ -14,6 +14,7 @@ spl_autoload_register(function ($class) {
 //$edit = new Databases_classes\Edit();
 //$dblist = new Databases_classes\DB_List();
 $parse = new Parsing\Parse();
+//$parse = new Parsing\ParseLinks();
 
 //echo "The result of table creation is: " . (integer)$create->createTable('usersssss');
 //echo "The result of table creation for MESSAGES is: " . (integer)$create->createTable('message_base', \Databases_classes\Create::MESSAGES);

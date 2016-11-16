@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Администратор
- * Date: 10.11.2016
- * Time: 21:54
+ * // WARNING: This class isn't completed!
+ * User: With the best regards, ROMA SLOBODENIUK
  */
 
 namespace Parsing;
@@ -11,59 +9,58 @@ use Databases_classes\Initialization;
 use Databases_classes\Create;
 use Databases_classes\Edit;
 use Databases_classes\DB_List;
+use Parsing\Parse;
 
-class Parse
+class ParseLinks extends Parse
 {
-    const INITIAL_PAGE = 'http://bash.im/';
-    public static $initial_path = __DIR__ . '\data\input_data.txt';
-    public $number_of_current_page;
-    public $current_page;
-    public $page_array = [];
-    public $data = [];
-    const CURRENT_PAGE = 1;
-    const PER_PAGE = 50;
+    const INITIAL_PAGE = 'http://zefirka.net/';
+//    public static $initial_path = __DIR__ . '\data\input_data.txt';
+//    public $number_of_current_page;
+//    public $current_page;
+//    public $page_array = [];
+//    public $data = [];
+//    const CURRENT_PAGE = 1;
+//    const PER_PAGE = 50;
 
     public function __construct()
     {
-//        $db = new Edit();
-//        $db->deleteTable('message_base');
-//        die;
         $this->setCurrentPage(self::INITIAL_PAGE);
-        $this->parseData(self::$initial_path);
-        $this->showContent();
+        $this->parseData(self::INITIAL_PAGE);
+//        $this->showContent();
     }
 
     public function getContentForParsing($file_destination)
     {
-        return iconv('CP1251', 'UTF-8', file_get_contents($file_destination, true));
-//        return file_get_contents($file_destination, true);
+//        return iconv('CP1251', 'UTF-8', file_get_contents($file_destination, true));
+        return file_get_contents($file_destination, true);
     }
 
     public function setCurrentPage($initial_path){
         $search_content = $this->getContentForParsing($initial_path);
-        $pattern = '/<div class="pager">(.*)<\/div>/i';
+//        echo $search_content;
+        $pattern = '/<span class=\'page-numbers current\'>([0-9]{0,5})<\/span>/i';
         $match = preg_match($pattern, $search_content, $matches);
 
-        $search_content = $matches[0];
-        $pattern = '/value="([0-9]{0,5})"/i';
-        $match = preg_match($pattern, $search_content, $matches);
         $this->number_of_current_page = $matches[1]; // We search for the value of the current page, then we'll use it in the function "parseData";
     }
 
     public function parseData($path_for_parsing){
         $temp_array_with_messages = array();
-        for($i = $this->number_of_current_page; $i > $this->number_of_current_page - 5; $i--){
-            $this->current_page = self::INITIAL_PAGE . 'index/' . $i; // we construct the page path which we are going to parse in further;
+        for($i = $this->number_of_current_page; $i < $this->number_of_current_page + 5; $i++){
+            $this->current_page = $path_for_parsing . 'page/' . $i; // we construct the page path which we are going to parse in further;
             array_push($this->page_array, $this->current_page); // we push every constructed path into array to show each on the pages;
-
             $search_content = $this->getContentForParsing($this->current_page); // if we want to parse content from "bash.im";
 //            $search_content = $this->getContentForParsing($path_for_parsing); // if we wanna parse just for testing from file: Parsing/data/input_data.txt;
-            $pattern = '/<div class="text">(.*)<\/div>/i';
+            $pattern = '/<span class="post-info-comments">(.*)<\/span>/i';
             $match = preg_match_all($pattern, $search_content, $matches); // we're searching for matches to full an array with messages;
-            foreach ($matches[0] as $list) {
+//            self::showArray($matches);
+//            die;
+            foreach ($matches[1] as $list) {
                 array_push($temp_array_with_messages, $list); // now we're pushing these messages one by another for every cycle step, it's because of we want to get all the messages from all the pages we have;
             }
         }
+        self::showArray($temp_array_with_messages);
+        die;
         $array_for_recording_to_DB = array();
         $array_for_recording_to_DB['type'] = Initialization::MESSAGES; // We full out an array preparing it for the messages inserting into DB;
         $array_for_recording_to_DB['table_name'] = 'message_base'; // We full out an array preparing it for the messages inserting into DB;

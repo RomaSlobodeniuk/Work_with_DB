@@ -27,7 +27,7 @@ class Edit extends Initialization
         if ($data['type'] == self::MESSAGES) {
             foreach ($data[0] as $key => $single_message) {
                 $result = $this->database->query("INSERT INTO `{$data['table_name']}`
-                                SET `id` = {$key} + 1,
+                                SET `id` = '',
                                   `messages` = '{$single_message}'");
             }
         }
@@ -52,6 +52,13 @@ class Edit extends Initialization
     {
         $this->setConnection();
         $this->database->query("TRUNCATE TABLE `{$table_name}`");
+        $this->closeConnection();
+    }
+
+    public function deleteTable($table_name)
+    {
+        $this->setConnection();
+        $this->database->query("DROP TABLE `{$table_name}`");
         $this->closeConnection();
     }
 
