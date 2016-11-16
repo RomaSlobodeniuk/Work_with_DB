@@ -28,15 +28,16 @@ class Parse
 //        $db = new Edit();
 //        $db->deleteTable('message_base');
 //        die;
-        $this->setCurrentPage(self::INITIAL_PAGE);
+        $this->setCurrentPage(self::$initial_path); // if we want to parse content from "bash.im";
+//        $this->setCurrentPage(self::INITIAL_PAGE); // if we wanna parse just for testing from file: Parsing/data/input_data.txt;
         $this->parseData(self::$initial_path);
         $this->showContent();
     }
 
     public function getContentForParsing($file_destination)
     {
-        return iconv('CP1251', 'UTF-8', file_get_contents($file_destination, true));
-//        return file_get_contents($file_destination, true);
+//        return iconv('CP1251', 'UTF-8', file_get_contents($file_destination, true)); // if we want to parse content from "bash.im";
+        return file_get_contents($file_destination, true); // if we wanna parse just for testing from file: Parsing/data/input_data.txt;
     }
 
     public function setCurrentPage($initial_path){
@@ -56,8 +57,8 @@ class Parse
             $this->current_page = self::INITIAL_PAGE . 'index/' . $i; // we construct the page path which we are going to parse in further;
             array_push($this->page_array, $this->current_page); // we push every constructed path into array to show each on the pages;
 
-            $search_content = $this->getContentForParsing($this->current_page); // if we want to parse content from "bash.im";
-//            $search_content = $this->getContentForParsing($path_for_parsing); // if we wanna parse just for testing from file: Parsing/data/input_data.txt;
+//            $search_content = $this->getContentForParsing($this->current_page); // if we want to parse content from "bash.im";
+            $search_content = $this->getContentForParsing($path_for_parsing); // if we wanna parse just for testing from file: Parsing/data/input_data.txt;
             $pattern = '/<div class="text">(.*)<\/div>/i';
             $match = preg_match_all($pattern, $search_content, $matches); // we're searching for matches to full an array with messages;
             foreach ($matches[0] as $list) {
@@ -71,10 +72,14 @@ class Parse
 
         $create = new Create();
         $result = (integer)$create->createTable('message_base', Create::MESSAGES); // We create a table here, but if there is the table already - it won't be created again;
-        $edit = new Edit();
-        $result = (integer)$edit->insertInTable($array_for_recording_to_DB); // after that we insert our prepared messages into DB, and again, if there are records - current operation won't be executed again;
+
         $db_list = new DB_List();
         $this->data = $db_list->getAllItemsFromDB($array_for_recording_to_DB['table_name']); // at last we get all the messages from DB to show them on the pages (we'll use "$this->data" to getting messages to parse them in the cycle in a "view.php");
+        $first_message = $db_list->getUserById('message_base', 1); // this is for "if-condition" below;
+        if(empty($first_message['messages'])){
+            $edit = new Edit();
+            $result = (integer)$edit->insertInTable($array_for_recording_to_DB); // after that we insert our prepared messages into DB, and again, if there are records - current operation won't be executed again;
+        }
     }
 
     public function showContent()
