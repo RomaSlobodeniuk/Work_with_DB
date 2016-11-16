@@ -61,25 +61,29 @@ class Parse
 //            $search_content = $this->getContentForParsing($path_for_parsing); // if we wanna parse just for testing from file: Parsing/data/input_data.txt;
             $pattern = '/<div class="text">(.*)<\/div>/i';
             $match = preg_match_all($pattern, $search_content, $matches); // we're searching for matches to full an array with messages;
+//            $temp_array_with_messages['count_'.$i] = count($matches[0]);
             foreach ($matches[0] as $list) {
                 array_push($temp_array_with_messages, $list); // now we're pushing these messages one by another for every cycle step, it's because of we want to get all the messages from all the pages we have;
             }
         }
+
         $array_for_recording_to_DB = array();
         $array_for_recording_to_DB['type'] = Initialization::MESSAGES; // We full out an array preparing it for the messages inserting into DB;
         $array_for_recording_to_DB['table_name'] = 'message_base'; // We full out an array preparing it for the messages inserting into DB;
         array_push($array_for_recording_to_DB, $temp_array_with_messages); // We full out an array preparing it for the messages inserting into DB;
 
+        $array_for_recording_to_DB[0] = array_map("self::addSlashes", $array_for_recording_to_DB[0]);
+
         $create = new Create();
         $result = (integer)$create->createTable('message_base', Create::MESSAGES); // We create a table here, but if there is the table already - it won't be created again;
 
         $db_list = new DB_List();
-        $this->data = $db_list->getAllItemsFromDB($array_for_recording_to_DB['table_name']); // at last we get all the messages from DB to show them on the pages (we'll use "$this->data" to getting messages to parse them in the cycle in a "view.php");
         $first_message = $db_list->getUserById('message_base', 1); // this is for "if-condition" below;
         if(empty($first_message['messages'])){
             $edit = new Edit();
             $result = (integer)$edit->insertInTable($array_for_recording_to_DB); // after that we insert our prepared messages into DB, and again, if there are records - current operation won't be executed again;
         }
+        $this->data = $db_list->getAllItemsFromDB($array_for_recording_to_DB['table_name']); // at last we get all the messages from DB to show them on the pages (we'll use "$this->data" to getting messages to parse them in the cycle in a "view.php");
     }
 
     public function showContent()
@@ -128,5 +132,13 @@ class Parse
         echo '<hr><br><pre>';
         var_export($array);
         echo '<hr><br></pre>';
+    }
+
+    public static function addSlashes($element)
+    {
+        if (preg_match('/\'/', $element, $result)) {
+            $element = str_replace('\'', '\\\'', $element);
+            return $element;
+        } else return $element;
     }
 }
