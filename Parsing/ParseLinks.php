@@ -21,15 +21,15 @@ class ParseLinks extends Parse
     public $current_page;
 //    public $page_array = [];
     public $data = [];
-//    const CURRENT_PAGE = 1;
-//    const PER_PAGE = 50;
+    const CURRENT_PAGE = 1;
+    const PER_PAGE = 10;
 
     public function __construct()
     {
         $this->setCurrentPage(self::INITIAL_PAGE);
         $this->setLastPage(self::INITIAL_PAGE);
-//        $this->parseData(self::INITIAL_PAGE);
-//        $this->showContent();
+        $this->parseData(self::INITIAL_PAGE);
+        $this->showContent();
     }
 
     public function getContentForParsing($file_destination)
@@ -67,8 +67,8 @@ class ParseLinks extends Parse
         $temp_array_with_comments = array();
         $matches_with_links = array();
         $matches_number_of_comments = array();
-        for ($i = $this->number_of_current_page, $j = 0; $i < $this->number_of_last_page
-             /*$j < 20*/; $i++) {
+        for ($i = $this->number_of_current_page, $j = 0; /*$i < $this->number_of_last_page*/
+             $j < 4; $i++) {
             $this->current_page = $path_for_parsing . 'page/' . $i;
             array_push($this->page_array, $this->current_page);
             $search_content = $this->getContentForParsing($this->current_page);
@@ -91,7 +91,7 @@ class ParseLinks extends Parse
                 if($value == 0){
                 } elseif ($value > 0){
                     $j++;
-                    echo '$j = ' . $j . '<br>';
+//                    echo '$j = ' . $j . '<br>';
                 }
             }
             foreach ($tmp_matches_with_links as $list) {
@@ -107,28 +107,33 @@ class ParseLinks extends Parse
 
         $temp_array_with_comments = $this->pushComment($matches_number_of_comments, $matches_with_links);
         self::showArray($temp_array_with_comments);
-        
 
+        $z = 0;
+        foreach ($temp_array_with_comments as $key => $value){
+            $pattern1 = '/[\d]{0,5} -> This is the link to comments: <a href="(.*)#comments">1 комментарий<\/a> with "([\d]{0,5})" comments/i';
+            $match = preg_match($pattern1, $value, $match1);
+//            self::showArray($match1);
 
-//        self::showArray($temp_array_with_comments);
-//        $this->data['matches_with_links'] = $matches_with_links;
-//        $this->data['matches_number_of_comments'] = $matches_number_of_comments;
-//        $this->data['temp_array_with_comments'] = $temp_array_with_comments;
+            $search_content = $this->getContentForParsing($match1[1]);
 
-//        self::showArray($this->data);
+            $pattern2 = '/<h1 class="content-headline">(.*)<\/h1>/i';
+            $match = preg_match($pattern2, $search_content, $match2);
+//            self::showArray($match2);
+            $this->data[$z]['headline'] = $match2[1];
 
-//        die;
-//        $array_for_recording_to_DB = array();
-//        $array_for_recording_to_DB['type'] = Initialization::MESSAGES; // We full out an array preparing it for the messages inserting into DB;
-//        $array_for_recording_to_DB['table_name'] = 'message_base'; // We full out an array preparing it for the messages inserting into DB;
-//        array_push($array_for_recording_to_DB, $temp_array_with_messages); // We full out an array preparing it for the messages inserting into DB;
-//
-//        $create = new Create();
-//        $result = (integer)$create->createTable('message_base', Create::MESSAGES); // We create a table here, but if there is the table already - it won't be created again;
-//        $edit = new Edit();
-//        $result = (integer)$edit->insertInTable($array_for_recording_to_DB); // after that we insert our prepared messages into DB, and again, if there are records - current operation won't be executed again;
-//        $db_list = new DB_List();
-//        $this->data = $db_list->getAllItemsFromDB($array_for_recording_to_DB['table_name']); // at last we get all the messages from DB to show them on the pages (we'll use "$this->data" to getting messages to parse them in the cycle in a "view.php");
+            $pattern3 = '/<img class="" src="(.*)" alt="'. $this->data[$z]['headline'] . '".*\/>/i';
+            $match = preg_match($pattern3, $search_content, $match3);
+            $this->data[$z]['headline_img_src'] = $match3[1];
+
+            $pattern4 = '/<div class="wc-comment-text"><p>(.*)<\/p>/i';
+            $match = preg_match_all($pattern4, $search_content, $match4);
+//            $this->data[$z][''] = $match4;
+            $this->data[$z]['comments'] = $match4[1];
+//            self::showArray($match4);
+            $z++;
+//            echo $search_content;
+        }
+        self::showArray($this->data);
     }
 
     public function showContent()
@@ -138,7 +143,7 @@ class ParseLinks extends Parse
         $end = $start_end_pagination_array[1];
         $pagination = $start_end_pagination_array[2];
 
-        require_once('template/view.php');
+        require_once('template/viewParseLinksToGetComments.php');
     }
 
     public function getPaginationContent()
