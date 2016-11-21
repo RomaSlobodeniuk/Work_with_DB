@@ -17,6 +17,7 @@ class ParseLinks extends Parse
     const INITIAL_PAGE = 'http://zefirka.net/';
 //    public static $initial_path = __DIR__ . '\data\input_data.txt';
     public $number_of_current_page;
+    public $number_of_last_page;
     public $current_page;
 //    public $page_array = [];
     public $data = [];
@@ -26,7 +27,8 @@ class ParseLinks extends Parse
     public function __construct()
     {
         $this->setCurrentPage(self::INITIAL_PAGE);
-        $this->parseData(self::INITIAL_PAGE);
+        $this->setLastPage(self::INITIAL_PAGE);
+//        $this->parseData(self::INITIAL_PAGE);
 //        $this->showContent();
     }
 
@@ -48,13 +50,25 @@ class ParseLinks extends Parse
         $this->number_of_current_page = $matches[1]; // We search for the value of the current page, then we'll use it in the function "parseData";
     }
 
+    public function setLastPage($initial_path)
+    {
+        $search_content = $this->getContentForParsing($initial_path);
+//        echo $search_content;
+        $pattern = '/<a class=\'page-numbers\' href=\'(.*)\'>([0-9]{0,5})<\/a>/i';
+        $match = preg_match_all($pattern, $search_content, $matches);
+//        self::showArray($matches);
+//        die;
+        $this->number_of_last_page = $matches[2][2]; // We search for the value of the current page, then we'll use it in the function "parseData";
+//        echo 'The last page is: ' . $this->number_of_last_page;
+    }
+
     public function parseData($path_for_parsing)
     {
         $temp_array_with_comments = array();
         $matches_with_links = array();
         $matches_number_of_comments = array();
-        for ($i = $this->number_of_current_page, $j = 0; /*$i < 10*/
-             $j < 2; $i++) {
+        for ($i = $this->number_of_current_page, $j = 0; $i < $this->number_of_last_page
+             /*$j < 20*/; $i++) {
             $this->current_page = $path_for_parsing . 'page/' . $i;
             array_push($this->page_array, $this->current_page);
             $search_content = $this->getContentForParsing($this->current_page);
@@ -70,57 +84,38 @@ class ParseLinks extends Parse
             $pattern = '/>([0-9]{0,}) комментари/i';
             $match = preg_match_all($pattern, $search_content_2, $matches_2nd);
 
-//            $matches_with_links = $matches_1st[1];
-//            $matches_number_of_comments = $matches_2nd[1];
+            $tmp_matches_with_links = $matches_1st[1];
+            $tmp_matches_number_of_comments = $matches_2nd[1];
 
-            foreach ($matches_1st[1] as $list) {
+            foreach ($tmp_matches_number_of_comments as $value){
+                if($value == 0){
+                } elseif ($value > 0){
+                    $j++;
+                    echo '$j = ' . $j . '<br>';
+                }
+            }
+            foreach ($tmp_matches_with_links as $list) {
                 array_push($matches_with_links, $list);
             }
-            foreach ($matches_2nd[1] as $list) {
+            foreach ($tmp_matches_number_of_comments as $list) {
                 array_push($matches_number_of_comments, $list);
             }
-            foreach ($matches_number_of_comments as $key => $value) {
-                switch ($value):
-                    case 0:
-                        break;
-                    case !0:
-                        $comment = "{$key} -> This is the link to comments: {$matches_with_links[$key]} with \"{$value}\" comments";
-
-                        $checking_string = false;
-                        if (!empty($temp_array_with_comments)) {
-                            foreach ($temp_array_with_comments as $com) {
-                                if ($com == $comment) {
-                                    $checking_string = false;
-                                    break;
-                                } else {
-                                    $checking_string = true;
-                                }
-                            }
-                            if ($checking_string) {
-                                array_push($temp_array_with_comments, $comment);
-                                $j++;
-                            }
-                        } elseif (empty($temp_array_with_comments)) {
-                            array_push($temp_array_with_comments, $comment);
-                            $j++;
-                        }
-
-                        echo '<br>' . $j . '<br>';
-                        break;
-                endswitch;
-            }
         }
-        self::showArray($this->page_array);
-
-
+//        self::showArray($this->page_array);
 //        self::showArray($matches_with_links);
 //        self::showArray($matches_number_of_comments);
-//        self::showArray($temp_array_with_comments);
-        $this->data['matches_with_links'] = $matches_with_links;
-        $this->data['matches_number_of_comments'] = $matches_number_of_comments;
-        $this->data['temp_array_with_comments'] = $temp_array_with_comments;
 
-        self::showArray($this->data);
+        $temp_array_with_comments = $this->pushComment($matches_number_of_comments, $matches_with_links);
+        self::showArray($temp_array_with_comments);
+        
+
+
+//        self::showArray($temp_array_with_comments);
+//        $this->data['matches_with_links'] = $matches_with_links;
+//        $this->data['matches_number_of_comments'] = $matches_number_of_comments;
+//        $this->data['temp_array_with_comments'] = $temp_array_with_comments;
+
+//        self::showArray($this->data);
 
 //        die;
 //        $array_for_recording_to_DB = array();
@@ -183,5 +178,36 @@ class ParseLinks extends Parse
         echo '<hr><br><pre>';
         var_export($array);
         echo '<hr><br></pre>';
+    }
+
+    public function pushComment($matches_number_of_comments, $matches_with_links){
+        $temp_array_with_comments = array();
+        foreach ($matches_number_of_comments as $key => $value) {
+            switch ($value):
+                case 0:
+                    break;
+                case !0:
+                    $comment = "{$key} -> This is the link to comments: {$matches_with_links[$key]} with \"{$value}\" comments";
+
+                    $checking_string = false;
+                    if (!empty($temp_array_with_comments)) {
+                        foreach ($temp_array_with_comments as $com) {
+                            if ($com == $comment) {
+                                $checking_string = false;
+                                break;
+                            } else {
+                                $checking_string = true;
+                            }
+                        }
+                        if ($checking_string) {
+                            array_push($temp_array_with_comments, $comment);
+                        }
+                    } elseif (empty($temp_array_with_comments)) {
+                        array_push($temp_array_with_comments, $comment);
+                    }
+                    break;
+            endswitch;
+        }
+        return $temp_array_with_comments;
     }
 }
